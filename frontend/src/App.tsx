@@ -47,7 +47,6 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState<string>("")
-  const [showGifLoading, setShowGifLoading] = useState(true)
 
   const fetchData = () => {
     setLoading(true)
@@ -72,50 +71,32 @@ function App() {
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowGifLoading(false)
-      fetchData()
-    }, 5000)
-
-    return () => clearTimeout(timer)
+    fetchData()
   }, [])
 
   const top5MarketCap = [...coins].sort((a, b) => b.market_cap - a.market_cap).slice(0, 5)
   const top5Volume = [...coins].sort((a, b) => b.total_volume - a.total_volume).slice(0, 5)
 
-  if (showGifLoading) {
-    return (
-      <div style={{
-        backgroundColor: "#0f0f0f",
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        overflow: "hidden",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: 9999
-      }}>
-        <img src="/procedural-generation-11379_512.gif" alt="Loading..." style={{ maxWidth: "80vw", maxHeight: "80vh" }} />
-      </div>
-    )
-  }
-
   if (loading) {
     return (
-      <div className={containerClass} style={{ backgroundColor: "#0f0f0f", minHeight: "100vh", width: "100vw" }}>
-        <Skeleton className="h-10 w-1/3 mb-4 bg-[#003300]" />
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
-          {Array.from({ length: 10 }).map((_, idx) => (
-            <Skeleton
-              key={idx}
-              className="h-24 w-full rounded-lg"
-              style={{ backgroundColor: "#003300" }}
-            />
-          ))}
+      <div className="flex flex-col justify-center items-center h-screen w-screen bg-[#0f0f0f] text-[#00ff00] font-mono px-4">
+        <h2 className="text-2xl mb-4">🔐 Connecting to Crypto Matrix...</h2>
+        <div className="w-full max-w-xl h-4 bg-[#003300] rounded-full overflow-hidden shadow-lg">
+          <div className="h-full bg-[#00ff00] loading-bar" />
         </div>
+        <style>
+          {`
+            .loading-bar {
+              width: 0%;
+              animation: grow 3s infinite ease-in-out;
+            }
+            @keyframes grow {
+              0% { width: 0%; }
+              50% { width: 100%; }
+              100% { width: 0%; }
+            }
+          `}
+        </style>
       </div>
     )
   }
