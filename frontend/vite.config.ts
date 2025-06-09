@@ -6,7 +6,16 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'), // This allows @ to refer to /src
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000', // FastAPI backend
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api'), // Optional: keep /api prefix
+      },
     },
   },
 })
